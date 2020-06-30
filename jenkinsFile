@@ -1,0 +1,22 @@
+node{
+    stage('SCM Checkout'){
+        git 'https://github.com/koushikyanala/exam'
+    }
+    stage('Mvn Package'){
+        def mvnHome = tool name: 'test_maven', type: 'maven'
+        def mvnCMD = "${mvnHome}/bin/mvn"
+        sh label:'', script: "${mvnCMD} clean package"
+    }
+    stage('Build Docker Image'){
+        sh 'docker build -t 7014/exam1 .'
+    }
+    stage('Push Docker Image'){
+        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
+         sh "docker login -u 7014 -p ${dockerHubPwd}"
+         sh 'docker push 7014/exam1'
+        }
+    }
+    stage('Run Container'){
+        sh 'docker run -i -d 7014/exam'
+    }
+}
