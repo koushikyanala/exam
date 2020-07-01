@@ -13,6 +13,6 @@ RUN yum -y install java
 RUN java -version
 
 
-EXPOSE 8081
+EXPOSE 8080
 COPY target/*.war /opt/tomcat/webapps/exam-1.0.0.war
 CMD ["/opt/tomcat/bin/catalina.sh", "run"]
